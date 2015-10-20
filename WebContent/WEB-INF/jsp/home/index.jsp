@@ -17,18 +17,19 @@
 </head>
 <body>
 
+<ul > <!-- class="nav navbar-nav" -->
+					<c:if test="${userSession.usuario.perfil eq 'Administrador' }">
+						<li><a href="<c:url value="/admin/livros"/>">Administração</a></li>
+					</c:if>
+				</ul>
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#">Livraria</a>
 			</div>
-			<div class="collapse navbar-collapse"
-				id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<c:if test="${userSession.usuario.perfil eq 'Administrador' }">
-						<li><a href="<c:url value="/admin/livros"/>">Administração</a></li>
-					</c:if>
-				</ul>
+			<div> <!-- class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1"> -->
+				
 			</div>
 
 			<ul class="nav navbar-nav navbar-right">
@@ -53,7 +54,7 @@
 			<table>
 				<c:forEach items="${livroList}" var="livro">
 					<tr>
-						<td><a href="<c:url value="/livros/${livro.id}"/>">${livro.titulo}</a>
+						<td><a href="<c:url value="/livro/${livro.id}"/>">${livro.titulo}</a>
 						</td>
 						<td><a href="<c:url value="#" />">Comprar</a></td>
 				</c:forEach>

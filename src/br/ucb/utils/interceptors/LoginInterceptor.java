@@ -35,9 +35,15 @@ public class LoginInterceptor implements Interceptor {
 		return !(method.getMethod().isAnnotationPresent(Public.class) || 
 				method.getResource().getType().isAnnotationPresent(Public.class));
 		*/
-		return userSession.isLogged() && 
-				!(method.getMethod().isAnnotationPresent(Public.class) || 
-					method.getResource().getType().isAnnotationPresent(Public.class));
+		if (userSession.isLogged() && !(method.getMethod().isAnnotationPresent(Public.class))) {
+			return true;
+		}
+		if (method.getResource().getType().isAnnotationPresent(Public.class)) {
+			return true;
+		}
+		
+		return false; 
+					
 		
 	}
 

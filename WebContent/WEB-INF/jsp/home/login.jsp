@@ -35,13 +35,16 @@
 						method="post">
 
 						<div class="form-group">
-							<label for="login">Email</label> <input type="text" id="login"
-								name="usuario.email" placeholder="Email" class="form-control" />
+							<label for="login">Email</label> 
+							<input type="text" id="login"
+									name="usuario.email" 
+									placeholder="Email" class="form-control" />
 						</div>
 						<div class="form-group">
-							<label for="senha">Senha</label> <input type="password"
-								id="senha" name="usuario.senha" placeholder="Senha"
-								class="form-control" />
+							<label for="senha">Senha</label> 
+							<input type="password"
+									id="senha" name="usuario.senha" placeholder="Senha"
+									class="form-control" />
 						</div>
 						<div class="form-group">
 							<button type="submit" class="btn btn-primary">Entrar</button>

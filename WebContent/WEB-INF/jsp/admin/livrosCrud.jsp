@@ -21,7 +21,7 @@
 			<label for="livro.titulo">Título</label>
 			<input type="text" name="livro.titulo" />
 			
-			<label for="livro.titulo">Título</label>
+			<label for="livro.titulo">Resumo</label>
 			<textarea name="livro.resumo" ></textarea>
 			
 			<label for="livro.preco">Preço</label>
