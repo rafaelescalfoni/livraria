@@ -2,6 +2,7 @@ package br.ucb.model;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import br.ucb.utils.componentes.PerfilEnum;
 
 /**
  *
@@ -140,4 +143,8 @@ public class Usuario implements Serializable {
         return "br.ucb.model.Usuario[ id=" + id + " ]";
     }
     
+    
+    public boolean isAdmin() {
+    	return this.getPerfil().equals(PerfilEnum.ADMINISTRADOR.getNome());
+    }
 }

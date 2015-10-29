@@ -10,6 +10,7 @@ import br.ucb.dao.DAOFactory;
 import br.ucb.model.Editora;
 import br.ucb.model.Genero;
 import br.ucb.model.Livro;
+import br.ucb.utils.anotacoes.Admin;
 import br.ucb.utils.componentes.UserSession;
 
 @Resource
@@ -25,20 +26,21 @@ public class AdminController {
 	}
 
 	//metodos de chamadas de página
-	@Get @Path("/admin/livros")
+	@Admin	@Get @Path("/admin/livros")
 	public void livrosCrud(){
 		result.include("livroList", daoFactory.getLivroDAO().list());
 		result.include("generoList", daoFactory.getGeneroDAO().list());
 		result.include("editoraList", daoFactory.getEditoraDAO().list());
 	}
 	
-	@Get @Path("/admin/livros/{livroId}/update")
+	@Admin	@Get @Path("/admin/livros/{livroId}/update")
 	public void formLivro(Long livroId){
 		result.include("livro", daoFactory.getLivroDAO().get(livroId));
 		result.include("generoList", daoFactory.getGeneroDAO().list());
 		result.include("editoraList", daoFactory.getEditoraDAO().list());
 	}
-	@Get @Path("/admin/generos/{generoId}/update")
+	
+	@Admin	@Get @Path("/admin/generos/{generoId}/update")
 	public void formGenero(Long generoId){
 		result.include("genero", daoFactory.getGeneroDAO().get(generoId));
 	}

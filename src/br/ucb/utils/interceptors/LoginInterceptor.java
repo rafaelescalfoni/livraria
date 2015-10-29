@@ -6,7 +6,9 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.core.InterceptorStack;
 import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.resource.ResourceMethod;
+import br.com.caelum.vraptor.view.Results;
 import br.ucb.controller.HomeController;
+import br.ucb.utils.anotacoes.Admin;
 import br.ucb.utils.anotacoes.Public;
 import br.ucb.utils.componentes.UserSession;
 
@@ -22,19 +24,23 @@ public class LoginInterceptor implements Interceptor {
 	}
 
 	/**
-	 * Decide se vai ou n�o interceptar a requisi��o atual.
+	 * Decide se vai ou nao interceptar a requisicao atual.
 	 *  
-	 * @param method: representa qual � o m�todo java que ser� executado na requisi��o, o m�todo do  
-	 *         			seu controller. Com esse objeto voc� tem acesso � classe do controller e ao  
-	 *         			m�todo java dele (java.reflect.Method) para poder, por exemplo, ver qual �
-	 *         			o nome do m�todo, ou se ele tem alguma anota��o
+	 * @param method: representa qual eh o metodo java que sera executado na requisicao, o  
+	 *         metodo do seu controller. Com esse objeto voce tem acesso a classe do   
+	 *         controller e ao metodo java dele (java.reflect.Method) para poder, por 
+	 *         exemplo, ver qual eh o nome do metodo, ou se ele tem alguma anotacao
 	 */
 	public boolean accepts(ResourceMethod method) {
-		//return !userSession.isLogged() ;
 		/*
-		return !(method.getMethod().isAnnotationPresent(Public.class) || 
-				method.getResource().getType().isAnnotationPresent(Public.class));
+		if(userSession.isLogged()) {
+			return true;
+		} else {
+			return false;
+		}
 		*/
+		// se o usuario estiver logado e o metodo nao for anotado com @Public
+		
 		if (userSession.isLogged() && !(method.getMethod().isAnnotationPresent(Public.class))) {
 			return true;
 		}
@@ -49,33 +55,47 @@ public class LoginInterceptor implements Interceptor {
 
 	/**
 	 * Intercepta a requisi��o. 
-	 * @param stack: possibilita continuar a execu��o normal da requisi��o e, portanto, executar de 
-	 *					fato a l�gica de neg�cios. 
-	 * @param method: representa qual � o m�todo java que ser� executado na requisi��o
-	 * @param resourceInstance: � o controller instanciado.
+	 * @param stack: possibilita continuar a execucao normal da requisicao e, portanto, executar de 
+	 *					fato a logica de negocios. 
+	 * @param method: representa qual eh o metodo java que sera executado na requisicao
+	 * @param resourceInstance: eh o controller instanciado.
 	 */
-	public void intercept(InterceptorStack stack, 
-							ResourceMethod method, 
-							Object resourceInstance)  throws InterceptionException {
-		
-		/*Nao interceptar quando se visulaiza um convite para participar do JATAI
-		if(resourceInstance.getClass().getSimpleName().equals("ParticipanteController") 
-				&& method.getMethod().getName().equals("visualizarConvite")){
-			stack.next(method, resourceInstance);
-		} else{
-		*/
-	
-		if (userSession == null) {
-			result.redirectTo(HomeController.class).index();
+	public void intercept(InterceptorStack pilhaDeExecucao, 
+							ResourceMethod metodo, 
+							Object classeControladora)  throws InterceptionException {
+		System.out.println("\nLoginInterceptor inicio do metodo intercept\n");
+		if (userSession == null) { // se objeto userSession não estiver criado, manda para a página de login...
+			System.out.println("\n\nLoginInterceptor intercept - nao tem usuario na sessao!!!");
+			result.redirectTo(HomeController.class).login();
 		} else {
-			if (userSession.isLogged()) {
-				stack.next(method, resourceInstance);
+			if (podeAcessar(metodo)) {
+				pilhaDeExecucao.next(metodo, classeControladora);
 			} else {
-				result.redirectTo(HomeController.class).index();
+				userSession.logout(); //expulsa o engracadinho da sessao sessao
+				result.redirectTo(HomeController.class).login(); //joga para a tela de login
 			}
 		}
 	
-		//}
+		
+		
 	}
+	
+	private boolean podeAcessar(ResourceMethod method) {
+		if(method.containsAnnotation(Public.class)){  // 1o caso - metodo @Public
+			System.out.println("\nLoginInterceptor: caso 1 @Public");
+			return true; 
+		}
+		if ((userSession.isLogged() && !method.containsAnnotation(Admin.class))) {  // 2o caso - usuario logado e metodo nao @Admin
+			System.out.println("\nLoginInterceptor: caso 2 usuario na sessao e metodo nao @Admin");
+			return true;
+		}
+		if (userSession.getUsuario().isAdmin() && method.containsAnnotation(Admin.class)){ // 3o caso - metodo admin e usuario admin
+			System.out.println("\nLoginInterceptor: caso 3 usuario na sessao eh admin e metodo @Admin");
+			return true;
+		}
+		
+		return false;
+	}
+
 
 }
