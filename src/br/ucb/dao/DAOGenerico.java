@@ -1,5 +1,6 @@
 package br.ucb.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -196,6 +197,41 @@ public class DAOGenerico<T> {
             	query.setParameter(chave, params.get(chave));
             }
             return (List<T>)query.setMaxResults(numLinhas).getResultList();
+        } catch (Exception e) {
+        	System.out.println("\nData da exce��o: " + new Date());
+        	log.error("\nDAO:\terro em listaTodos(Map): "+e.getMessage());
+    		return null;
+        }
+	}
+	
+	/**
+	 * Retorna um subconjunto de valores resultantes de uma consulta.
+	 * Feito pensado para os tabelas 
+	 * @param strQuery
+	 * @param params
+	 * @param inicio
+	 * @param fim
+	 * @return
+	 */
+	public List<T> list(String strQuery, Map<String, Object> params, int inicio, int fim) {
+		try {
+            Query query = getEntityManager().createQuery(strQuery);
+            for(String chave:params.keySet()) {
+            	query.setParameter(chave, params.get(chave));
+            }
+            List<T> list = query.getResultList();
+            List<T> listResult = new ArrayList<T>();
+            inicio = inicio - 1;
+            if (inicio > fim || inicio<0 || fim <0) {
+            	return listResult;
+            }
+            if (fim>list.size()) {
+            	fim = list.size();
+            }
+            for(int k = inicio; k < fim; k++ ) {
+            	listResult.add(list.get(k));
+            }
+            return listResult;
         } catch (Exception e) {
         	System.out.println("\nData da exce��o: " + new Date());
         	log.error("\nDAO:\terro em listaTodos(Map): "+e.getMessage());

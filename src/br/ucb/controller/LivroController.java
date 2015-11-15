@@ -8,6 +8,7 @@ import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
 import br.ucb.dao.DAOFactory;
 import br.ucb.model.Livro;
 import br.ucb.utils.componentes.UserSession;
@@ -27,12 +28,21 @@ public class LivroController {
 		this.userSession = userSession;
 		this.daoFactory = dao;
 	}
+
+	@Get @Path("/livros/{inicio}/{fim}")
+	public void list(int inicio, int fim) {
+		String strQuery = "FROM Livro l";
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<Livro> lista = daoFactory.getLivroDAO().list(strQuery, params, inicio, fim);
+		result.use(Results.xml()).from(lista, "livros").serialize();
+	}
 	
 	@Get("/livro/{livroId}")
 	public void formulario(Long livroId) {
 		Livro livro = daoFactory.getLivroDAO().get(livroId); //pesquisar o livro no bd
 		result.include("livro", livro); //botar o livro a disposiçào da jsp
 	}
+	
 	
 	@Get("/livro/{livroTitulo}")
 	public void pesquisaLivro(String livroTitulo) {
@@ -54,7 +64,7 @@ public class LivroController {
 		System.out.println("\n titulo digitado = " + livroTitulo);
 		List<Livro> livrosEncontrados = daoFactory.getLivroDAO().list(strQuery, params);
 		if (livrosEncontrados != null) {
-			result.use(xml()).from(livrosEncontrados, "livros").serialize();
+			result.use(json()).from(livrosEncontrados, "livros").serialize();
 		}
 	}
 	
