@@ -28,7 +28,23 @@ public class LivroController {
 		this.userSession = userSession;
 		this.daoFactory = dao;
 	}
+	
+	@Get @Path("/livros")
+	public void lista() {
+		List<Livro> livroList =  daoFactory.getLivroDAO().list();
+		String data = "[";
+		int contador = 1;
+		for(Livro l:livroList) {
+			data += "['" + l.getTitulo() + "', '" + l.getGenero().getNome() +"','"+ l.getAutor()  + "']";
+			if (contador != livroList.size()) {
+				data += ", ";
+			}
+		}
+		data +="]";
+		result.include("data", data);
+	}
 
+	
 	@Get @Path("/livros/{inicio}/{fim}")
 	public void list(int inicio, int fim) {
 		String strQuery = "FROM Livro l";

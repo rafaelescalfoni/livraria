@@ -203,6 +203,7 @@ public class DAOGenerico<T> {
     		return null;
         }
 	}
+ 
 	
 	/**
 	 * Retorna um subconjunto de valores resultantes de uma consulta.
@@ -228,9 +229,12 @@ public class DAOGenerico<T> {
             if (fim>list.size()) {
             	fim = list.size();
             }
+            /*
             for(int k = inicio; k < fim; k++ ) {
             	listResult.add(list.get(k));
             }
+            */
+            listResult.addAll(list.subList(inicio, fim));
             return listResult;
         } catch (Exception e) {
         	System.out.println("\nData da exce��o: " + new Date());
